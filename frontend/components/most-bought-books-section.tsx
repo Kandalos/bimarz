@@ -41,7 +41,7 @@ export async function MostBoughtBooksSection() {
               <div className="group bg-white rounded-lg border-2 border-wood-light/40 hover:border-wood-medium hover:shadow-xl transition-all overflow-hidden h-full">
                 <div className="relative aspect-[3/4] overflow-hidden">
                   <img
-                    src={book.cover || "/placeholder.svg"}
+                    src={book.cover_image || "/placeholder.svg"}
                     alt={book.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />

@@ -73,13 +73,13 @@ export default function ProfilePage() {
         const form = new FormData()
         form.append("avatar", avatarFile)
 
-        await apiService.patch("api/v1/core/users/me/", form, {
+        await apiService.patch("v1/core/users/me/", form, {
           headers: { "Content-Type": "multipart/form-data" },
         })
       }
 
       // Handle profile fields
-      await apiService.patch("api/v1/core/users/me/", formData)
+      await apiService.patch("/v1/core/users/me/", formData)
 
       await refreshUser()
       setIsEditing(false)

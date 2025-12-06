@@ -37,9 +37,17 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": (
-        "rest_framework.permissions.IsAuthenticated",
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
-    ),
+    "rest_framework.permissions.AllowAny",    ),
+    
+    "DEFAULT_THROTTLE_CLASSES": [
+    "rest_framework.throttling.AnonRateThrottle",
+    "rest_framework.throttling.UserRateThrottle",
+    ],
+
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "10/sec",       # IP-based for anonymous users
+        "user": "20/min",      # Authenticated accounts
+    }
 }
 # Application definition
 
@@ -57,7 +65,6 @@ INSTALLED_APPS = [
     'shop',
     'rest_framework_simplejwt',
     'djoser',
-    
 ]
 
 MIDDLEWARE = [
@@ -70,6 +77,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
 ]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 ROOT_URLCONF = 'project.urls'
 
@@ -104,8 +114,11 @@ DATABASES = {
 # --- Custom User Model Configuration ---
 AUTH_USER_MODEL = 'core.CustomUser'
 
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",  # required
+    "core.auth_backends.EmailBackend",            # custom email auth
+]
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -155,16 +168,20 @@ CORS_ALLOW_ALL_ORIGINS = True
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' 
 
 DJOSER = {
+    "LOGIN_FIELD": "email",
     "USER_CREATE_PASSWORD_RETYPE": True,
     "SERIALIZERS": {
         "user_create": "core.serializers.UserRegistrationSerializer",
         "user": "core.serializers.UserSerializer",
         "current_user": "core.serializers.UserSerializer",
     },
-    # If you want Djoser to use SIMPLE_JWT endpoints instead of djoser.jwt:
-    # "TOKEN_MODEL": None,
+    "PERMISSIONS": {
+    "user_create": ["rest_framework.permissions.AllowAny"],
+    "user": ["rest_framework.permissions.IsAuthenticated"],
+    "current_user": ["rest_framework.permissions.IsAuthenticated"],
 }
 
+}
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),     # example
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),

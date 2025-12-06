@@ -9,6 +9,8 @@ import { ShoppingCart, ArrowRight, Plus, Minus, ChevronDown, ChevronUp } from "l
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import apiService from "@/lib/apiService";
+import { useParams } from "next/navigation";
+
 
 export default function BookDetailPage() {
   const [quantity, setQuantity] = useState(1);
@@ -16,16 +18,13 @@ export default function BookDetailPage() {
   const [book, setBook] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
-
-  const pathname = typeof window !== "undefined" ? window.location.pathname : "";
-  // crude id extraction: /shop/123 -> 123
-  const id = pathname.split("/").filter(Boolean).pop();
+  const { id } = useParams();
 
   useEffect(() => {
     const fetchBook = async () => {
       setLoading(true);
       try {
-        const res = await apiService.get(`/v1/shop/books/${id}/`);
+        const res = await apiService.get(`v1/shop/books/${id}/`);
         setBook(res.data);
       } catch (e: any) {
         console.error(e);

@@ -7,9 +7,9 @@ from django.db.models.signals import pre_save, post_save, pre_delete
 from django.dispatch import receiver
 
 User = get_user_model()
-
 class Genre(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(max_length=120, unique=True, blank=True)
 
     class Meta:
         verbose_name = _("Genre")
@@ -17,6 +17,13 @@ class Genre(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        # Auto-generate slug if not provided
+        if not self.slug:
+            from django.utils.text import slugify
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
 class Book(models.Model):
     title = models.CharField(max_length=255)

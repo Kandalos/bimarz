@@ -25,8 +25,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Save tokens & load user
   const login = (access: string, refresh: string) => {
-    localStorage.setItem("accessToken", access);
-    localStorage.setItem("refreshToken", refresh);
+    localStorage.setItem("access_token", access);
+    localStorage.setItem("refresh_token", refresh);
     setAccessToken(access);
     setRefreshToken(refresh);
     fetchUser(access);
@@ -34,8 +34,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Logout
   const logout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
     setAccessToken(null);
     setRefreshToken(null);
     setUser(null);
@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Fetch user info
   const fetchUser = async (token: string) => {
     try {
-      const res = await apiService.get("/api/v1/core/users/me/", {
+      const res = await apiService.get("/v1/core/users/me/", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -59,8 +59,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Load tokens on first page load
   useEffect(() => {
-    const access = localStorage.getItem("accessToken");
-    const refresh = localStorage.getItem("refreshToken");
+    const access = localStorage.getItem("access_token");
+    const refresh = localStorage.getItem("refresh_token");
 
     if (access) {
       setAccessToken(access);
@@ -89,12 +89,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Refresh token
   const refreshAccessToken = async (refresh: string) => {
     try {
-      const res = await apiService.post("/api/token/refresh/", {
+      const res = await apiService.post("/token/refresh/", {
         refresh,
       });
 
       const newAccess = res.data.access;
-      localStorage.setItem("accessToken", newAccess);
+      localStorage.setItem("access_token", newAccess);
       setAccessToken(newAccess);
 
       fetchUser(newAccess);

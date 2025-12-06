@@ -66,7 +66,7 @@ export default function RegisterPage() {
       }
 
       // FIX: Using the confirmed path: 'v1/core/users/'
-      await apiService.post('api/v1/core/users/', userData) 
+      await apiService.post('/v1/core/register/', userData) 
       
       console.log("ثبت‌نام با موفقیت انجام شد.")
       // Redirect to login page after successful registration

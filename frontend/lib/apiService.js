@@ -32,31 +32,29 @@ const clearTokens = () => {
 
 // PUBLIC endpoints that should NOT get Authorization header
 const PUBLIC_ENDPOINTS = [
-  '/v1/core/users/',    // Djoser registration path
-  '/token/',            // login
-  '/token/refresh/',    // refresh
+  '/token/',           // login
+  '/token/refresh/',   // refresh
+  '/v1/core/users/',
 ];
 
 axiosInstance.interceptors.request.use(config => {
-  try {
-    const url = config.url || '';
-    const isPublic = PUBLIC_ENDPOINTS.some(ep => url.includes(ep));
-    const { access } = getTokens();
+  const url = config.url || "";
 
-    if (access && !isPublic) {
-      config.headers = config.headers || {};
-      if (!config.headers.Authorization) {
-        config.headers.Authorization = `Bearer ${access}`;
-      }
-    }
-    // If public endpoint, strip authorization header if present
-    if (isPublic && config.headers?.Authorization) {
-      delete config.headers.Authorization;
-    }
-    return config;
-  } catch (err) {
-    return config;
+  // exact match only
+  const isPublic = PUBLIC_ENDPOINTS.includes(url);
+
+  const { access } = getTokens();
+
+  if (access && !isPublic) {
+    config.headers = config.headers || {};
+    config.headers.Authorization = `Bearer ${access}`;
   }
+
+  if (isPublic && config.headers?.Authorization) {
+    delete config.headers.Authorization;
+  }
+
+  return config;
 });
 
 // Response interceptor for automatic refresh on 401

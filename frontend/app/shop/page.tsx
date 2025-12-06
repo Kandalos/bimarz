@@ -91,17 +91,17 @@ export default function ShopPage() {
                   <div className="group bg-white rounded-lg border-2 border-wood-light/40 overflow-hidden hover:border-wood-medium transition-all hover:shadow-xl wood-texture">
                     <div className="relative aspect-[3/4] overflow-hidden">
                       <img
-                        src={book.cover_image ? `${process.env.NEXT_PUBLIC_API_BASE_URL}${book.cover_image}` : book.image || "/placeholder.svg"}
+                        src={book.cover_image || "/placeholder.svg"}
                         alt={book.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
-                      {!book.inStock && (
-                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                          <Badge variant="destructive" className="text-lg px-4 py-2">
-                            ناموجود
-                          </Badge>
-                        </div>
-                      )}
+                    {book.stock <= 0 && (
+                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                        <Badge variant="destructive" className="text-lg px-4 py-2">
+                          ناموجود
+                        </Badge>
+                      </div>
+                    )}
                     </div>
                     <div className="p-4">
                       <h3 className="font-bold text-lg text-wood-dark mb-1 line-clamp-1">{book.title}</h3>

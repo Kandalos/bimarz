@@ -40,6 +40,10 @@ class BookViewSet(viewsets.ModelViewSet):
         instance.save()
 
 
+    def perform_create(self, serializer):
+        serializer.save(is_active=True)
+
+
 class GenreViewSet(viewsets.ModelViewSet):
     """
     Simple CRUD for genres.

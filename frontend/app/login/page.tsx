@@ -46,7 +46,7 @@ export default function LoginPage() {
     setApiError(null);
 
     try {
-      const response = await apiService.post("/api/token/", {
+      const response = await apiService.post("/token/", {
         email: formData.email, // Django uses `email` as USERNAME_FIELD
         password: formData.password,
       });
