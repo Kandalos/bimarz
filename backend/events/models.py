@@ -32,6 +32,11 @@ class Event(models.Model):
             return float('inf') # Unlimited
         return self.capacity - self.attendees.count()
 
+    image = models.ImageField(
+        upload_to="events/",
+        null=True,
+        blank=True
+    )
 
 class EventRegistration(models.Model):
     """

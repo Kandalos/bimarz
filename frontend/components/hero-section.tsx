@@ -219,41 +219,7 @@ export function HeroSection() {
           </g>
         </svg>
       </div>
-      {/* </CHANGE> */}
-
-      <div className="absolute top-20 left-0 z-20">
-        <div className="relative w-48 h-48">
-          <img
-            src="/torn-corner.jpg"
-            alt=""
-            className="w-full h-full object-contain"
-            style={{
-              filter: "drop-shadow(4px 4px 12px rgba(0,0,0,0.2))",
-              maskImage: "radial-gradient(ellipse at top left, black 40%, transparent 85%)",
-              WebkitMaskImage: "radial-gradient(ellipse at top left, black 40%, transparent 85%)",
-            }}
-          />
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-8 pr-8 pb-8">
-            <a
-              href="https://instagram.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-wood-dark hover:text-wood-medium transition-colors"
-            >
-              <i className="lni lni-instagram text-7xl"></i>
-            </a>
-            <a
-              href="https://youtube.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-wood-dark hover:text-wood-medium transition-colors"
-            >
-              <i className="lni lni-youtube text-7xl"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-
+      
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {[...Array(6)].map((_, i) => (
           <div
@@ -325,11 +291,13 @@ export function HeroSection() {
                 <img src="/logo.svg" alt="cafe schalpate" className="w-24 h-24 relative z-10" />
               </div>
               <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-8 text-balance leading-[1.2] text-wood-dark">
-                نغمه‌ای از طعم و فرهنگ
+               اولین کافه‌کتاب ایرانی در اروپا
               </h1>
               <p className="text-base md:text-lg text-wood-dark/70 max-w-xl mx-auto leading-relaxed text-pretty">
-                در کافه شال‌پلاته، هر فنجان قهوه با نوایی از فرهنگ و خاطره همراه است. جایی که صدای صفحه‌های قدیمی در هوای
-                کلن می‌پیچد و گفت‌وگوها با لطافت موسیقی و عطر قهوه در هم می‌آمیزند.
+               شالپلاته؛ پاتوق ایرانی‌ها و کتاب‌خوان‌ها در قلب اروپا.
+
+               قهوه‌ در کنار کتاب‌های دوست‌داشتنی و میزهایی که همیشه برای یک گفت‌وگوی تازه آماده‌اند.
+               اینجا حس خانه می‌دهد؛ هم برای خواندن، هم برای گپ‌وگفت
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -340,7 +308,7 @@ export function HeroSection() {
                 {"کتاب فروشی"}
               </a>
               <a
-                href="#contact"
+                href="/cafe"
                 className="inline-flex items-center justify-center px-8 py-3 border-2 border-wood-medium text-wood-dark rounded-lg hover:bg-wood-light/30 transition-all duration-300 wood-texture"
               >
                 کافه شالپلاته
@@ -351,15 +319,15 @@ export function HeroSection() {
           {/* Newsletter Titles Section */}
           <div className="bg-wood-light/20 backdrop-blur-sm border-2 border-wood-medium/40 rounded-lg p-6 wood-texture shadow-xl">
             <div className="flex items-center gap-3 mb-6">
-              <i className="lni lni-write text-3xl text-wood-dark"></i>
-              <h2 className="text-2xl md:text-3xl font-bold text-wood-dark">خبرنامه‌ها</h2>
+              <h2 className="text-2xl md:text-3xl font-bold text-wood-dark">ارسال کتاب به سراسر جهان</h2>
+              <h3 className="text-2x1 mid:text-xl font-bold text-wood-dark"> ارسال رایگان برای خرید حداقل 80 یورو برای اروپا و 50 یورو برای آلمان</h3>
             </div>
             <div className="space-y-4 max-h-96 overflow-y-auto">
               {[
-                { id: 1, title: "رویدادهای فرهنگی بهار ۱۴۰۳", date: "۱۵ اسفند ۱۴۰۲" },
-                { id: 2, title: "معرفی کتاب‌های جدید ماه", date: "۱۰ اسفند ۱۴۰۲" },
-                { id: 3, title: "نشست‌های ادبی هفته", date: "۵ اسفند ۱۴۰۲" },
-                { id: 4, title: "گزارش رونمایی کتاب", date: "۱ اسفند ۱۴۰۲" },
+                { id: 1, title: "رویدادهای پیش‌رو ", date: "۱۵ اسفند ۱۴۰۲" },
+                { id: 2, title: "داغ‌ترین کتاب‌ها", date: "۱۰ اسفند ۱۴۰۲" },
+                { id: 3, title: "برنامه‌های فرهنگی هنری", date: "۵ اسفند ۱۴۰۲" },
+                { id: 4, title: "گزارش برنامه‌های گذشته", date: "۱ اسفند ۱۴۰۲" },
               ].map((newsletter) => (
                 <a
                   key={newsletter.id}
@@ -377,8 +345,7 @@ export function HeroSection() {
               href="/newsletter"
               className="mt-6 block text-center px-6 py-2 bg-wood-medium text-white rounded-lg hover:bg-wood-dark transition-colors font-bold"
             >
-              مشاهده همه خبرنامه‌ها
-            </a>
+مشاهده‌ی همه‌‌ی برنامه‌ها            </a>
           </div>
         </div>
       </div>

@@ -11,9 +11,19 @@ const partners = [
     logo: "/nobeh.jpg",
     url: "https://example.com",
   },
-  {
-    name: " AWA ",
+    {
+    name: " awa ",
     logo: "/awa.png",
+    url: "https://example.com",
+  },
+  {
+    name: " Instagram ",
+    logo: "/ig.png",
+    url: "https://example.com",
+  },
+  {
+    name: " Youtube ",
+    logo: "/yt.png",
     url: "https://example.com",
   },
 
@@ -25,14 +35,13 @@ export function PartnershipSection() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4 text-balance text-wood-dark">
-            شرکای ما
+            رسانه های ما
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            افتخار همکاری با برترین نهادهای فرهنگی و ادبی کشور را داریم
-          </p>
+اینجا می‌توانید برنامه‌های یوتیوب و پادکست‌های ما را بشنوید          </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-8">
           {partners.map((partner, index) => (
             <Link
               key={index}
@@ -44,7 +53,7 @@ export function PartnershipSection() {
               <img
                 src={partner.logo || "/placeholder.svg"}
                 alt={partner.name}
-                className="w-full h-auto object-contain grayscale group-hover:grayscale-0 transition-all opacity-70 group-hover:opacity-100"
+                className="w-full h-auto object-contain transition-all opacity-70 group-hover:opacity-100"
               />
             </Link>
           ))}

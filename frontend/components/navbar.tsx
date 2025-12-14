@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useState, useEffect } from "react"
-import { Search } from "lucide-react"
+import { Search, ShoppingCart, User } from "lucide-react"
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -34,14 +34,16 @@ export function Navbar() {
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
+          {/* Logo */}
           <Link
             href="/"
             className="flex items-center gap-2 text-wood-dark hover:text-wood-medium transition-colors font-bold"
           >
             <img src="/bimarz.svg" alt="Logo" className="w-10 h-10" />
-            <span className="font-bold text-lg">{"نشر بی‌مرز"}</span>
+            <span className="font-bold text-lg">نشر بی‌مرز</span>
           </Link>
 
+          {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-6 flex-1 justify-center max-w-2xl mx-8">
             <div className="flex items-center gap-8">
               {navLinks.map((link) => (
@@ -56,6 +58,7 @@ export function Navbar() {
               ))}
             </div>
 
+            {/* Search */}
             <div className="relative flex-1 max-w-xs">
               <input
                 type="text"
@@ -66,19 +69,37 @@ export function Navbar() {
             </div>
           </div>
 
-          <button className="md:hidden p-2 text-wood-dark hover:text-wood-medium transition-colors">
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+          {/* Icons */}
+          <div className="flex items-center gap-4">
+            <Link
+              href="/cart"
+              className="text-wood-dark hover:text-wood-medium transition-colors"
             >
-              <path d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
+              <ShoppingCart className="w-5 h-5" />
+            </Link>
+
+            <Link
+              href="/profile"
+              className="text-wood-dark hover:text-wood-medium transition-colors"
+            >
+              <User className="w-5 h-5" />
+            </Link>
+
+            {/* Mobile Menu Button */}
+            <button className="md:hidden p-2 text-wood-dark hover:text-wood-medium transition-colors">
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </nav>

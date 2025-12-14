@@ -18,7 +18,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         model = User
         fields = (
             'id', 'email', 'username', 'password', 're_password',
-            'first_name', 'last_name', 'phone_number', 'address', 'postal_code'
+            'first_name', 'last_name', 'phone_number', 'address', 'postal_code',
         )
 
     def validate(self, data):
@@ -59,5 +59,7 @@ class UserSerializer(serializers.ModelSerializer):
             "avatar",
             "customer_id",
             "is_verified_buyer",
+            "is_superuser",
+            "is_staff",
         ]
         read_only_fields = ["id", "customer_id", "is_verified_buyer"]

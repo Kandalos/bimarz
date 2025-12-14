@@ -47,12 +47,7 @@ class CustomUser(AbstractUser):
 
     objects = CustomUserManager()
 
-    username = models.CharField(
-        max_length=150,
-        blank=True,
-        null=True,
-        help_text="Legacy field (unused). Optional for admin panel compatibility."
-    )
+    username = models.CharField( unique=True, max_length=150, blank=True,null=True,help_text="Legacy field (unused). Optional for admin panel compatibility.")
 
     def __str__(self):
         return self.email

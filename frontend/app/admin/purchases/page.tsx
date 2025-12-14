@@ -106,14 +106,24 @@ export default function AdminPurchasesPage() {
       <div className="container mx-auto px-4 py-24">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="flex items-center gap-4 mb-8">
-            <Link href="/admin">
-              <Button variant="outline" className="border-wood-light hover:bg-wood-light/10 bg-transparent">
-                <ArrowRight className="w-4 h-4 ml-2" />
-                بازگشت به پنل مدیریت
-              </Button>
-            </Link>
-            <h1 className="text-4xl md:text-5xl font-bold text-wood-dark">مدیریت خریدها</h1>
+          <div className="mb-12 space-y-6">
+            <div className="text-center py-6">
+              <h1 className="text-4xl md:text-5xl font-bold text-wood-dark mb-3">مدیریت سفارشات</h1>
+              <p className="text-wood-medium text-lg mb-6">پیگیری و مدیریت خریدهای مشتریان</p>
+
+              <div className="flex justify-center mt-8">
+                <Link href="/admin">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="border-2 border-wood-dark hover:bg-wood-dark hover:text-white bg-transparent text-wood-dark font-semibold px-8 transition-all"
+                  >
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                    بازگشت به پنل اصلی
+                  </Button>
+                </Link>
+              </div>
+            </div>
           </div>
 
           {/* Statistics */}

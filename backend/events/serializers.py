@@ -4,11 +4,14 @@ from .models import Event, EventRegistration
 class EventSerializer(serializers.ModelSerializer):
     # remaining_capacity is a read-only field calculated in the model
     remaining_capacity = serializers.ReadOnlyField() 
+    image = serializers.ImageField(required=False)
+
     
     class Meta:
         model = Event
         fields = '__all__'
-        read_only_fields = ['capacity', 'remaining_capacity']
+        read_only_fields = ['remaining_capacity']
+        
 
 class EventRegistrationSerializer(serializers.ModelSerializer):
     user_username = serializers.CharField(source='user.username', read_only=True)

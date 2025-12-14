@@ -34,7 +34,11 @@ class BookSerializer(serializers.ModelSerializer):
             "genre_ids",
             "cover_image",
             "is_active",
-            "sold_count"
+            "sold_count",
+            "translator",
+            "book_size",
+            "year",
+            "pages",
         )
         read_only_fields = ("id","sold_count")
 

@@ -7,151 +7,127 @@ import { Mail, Phone, MapPin } from "lucide-react"
 
 export default function ContactPage() {
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-wood-light">
       <Navbar />
 
-      <div className="container mx-auto px-4 py-24">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-wood-dark mb-4">تماس با ما</h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              ما همیشه مشتاق شنیدن نظرات شما هستیم. با ما در ارتباط باشید
-            </p>
-          </div>
+      {/* Hero */}
+      <section
+        className="relative pt-32 pb-24 px-6"
+        style={{
+          backgroundImage: "url('/cafeshh.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <div className="absolute inset-0 bg-wood-dark/75" />
+        <div className="relative z-10 max-w-3xl mx-auto text-center">
+          <h1 className="text-5xl md:text-6xl font-bold text-wood-light mb-6">
+            تماس با ما
+          </h1>
+        </div>
+      </section>
 
-          <div className="grid md:grid-cols-2 gap-12">
-            {/* Contact Form */}
-            <div className="bg-white rounded-lg border-2 border-wood-light/40 p-8 wood-texture">
-              <h2 className="text-2xl font-bold text-wood-dark mb-6">فرم تماس</h2>
-              <form className="space-y-6">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-wood-dark mb-2">
-                    نام و نام خانوادگی
-                  </label>
-                  <Input
-                    id="name"
-                    type="text"
-                    placeholder="نام خود را وارد کنید"
-                    className="border-wood-medium/30 focus:border-wood-dark"
-                  />
+      {/* Content */}
+      <section
+        className="relative py-20 px-6"
+        style={{
+          backgroundImage: "url('/images/contact/paper.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <div className="absolute inset-0 bg-wood-light/80 backdrop-blur-sm" />
+          
+        <div className="relative z-10 max-w-6xl mx-auto grid md:grid-cols-2 gap-12">
+
+            <div className="relative inline-block">
+  {/* SVG Background */}
+  <svg
+    className="absolute inset-0 w-full h-full"
+    xmlns="http://www.w3.org/2000/svg"
+    style={{ opacity: 0.6 }}
+    aria-hidden
+  >
+    <defs>
+      <pattern
+        id="brickPatternLogo"
+        x="0"
+        y="0"
+        width="96"
+        height="48"
+        patternUnits="userSpaceOnUse"
+      >
+        <rect x="0" y="0" width="45" height="21" fill="#8B4513" stroke="#654321" strokeWidth="0.5" />
+        <rect x="48" y="0" width="45" height="21" fill="#A0522D" stroke="#654321" strokeWidth="0.5" />
+        <rect x="-24" y="24" width="45" height="21" fill="#D2691E" stroke="#654321" strokeWidth="0.5" />
+        <rect x="24" y="24" width="45" height="21" fill="#CD853F" stroke="#654321" strokeWidth="0.5" />
+        <rect x="72" y="24" width="45" height="21" fill="#8B4513" stroke="#654321" strokeWidth="0.5" />
+      </pattern>
+    </defs>
+
+    <rect width="100%" height="100%" fill="url(#brickPatternLogo)" />
+  </svg>
+
+  {/* Logo with padding */}
+  <img
+    src="/logo.svg"
+    alt="نشر بی‌مرز"
+    className="relative z-10 block p-4"
+  />
+</div>
+
+
+          <div className="space-y-8">
+            {/* Info */}
+            <div className="wood-texture bg-wood-light/60 rounded-2xl p-8 border-4 border-wood-medium/40 shadow-xl">
+              <h2 className="text-2xl font-bold text-wood-dark mb-6">
+                اطلاعات تماس
+              </h2>
+
+              <div className="space-y-6 text-wood-dark/80">
+                <div className="flex gap-4">
+                  <MapPin className="w-6 h-6 text-wood-medium shrink-0" />
+                  <p>
+                    Café Schallplatte  
+                    <br />
+                    Scheidtweilerstr. 9  
+                    <br />
+                    50933 Cologne
+                  </p>
                 </div>
 
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-wood-dark mb-2">
-                    ایمیل
-                  </label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="example@email.com"
-                    className="border-wood-medium/30 focus:border-wood-dark"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-wood-dark mb-2">
-                    شماره تماس
-                  </label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    placeholder="۰۹۱۲۳۴۵۶۷۸۹"
-                    className="border-wood-medium/30 focus:border-wood-dark"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-wood-dark mb-2">
-                    موضوع
-                  </label>
-                  <Input
-                    id="subject"
-                    type="text"
-                    placeholder="موضوع پیام خود را وارد کنید"
-                    className="border-wood-medium/30 focus:border-wood-dark"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-wood-dark mb-2">
-                    پیام
-                  </label>
-                  <Textarea
-                    id="message"
-                    placeholder="پیام خود را بنویسید..."
-                    rows={5}
-                    className="border-wood-medium/30 focus:border-wood-dark resize-none"
-                  />
-                </div>
-
-                <Button className="w-full bg-wood-medium hover:bg-wood-dark text-white">ارسال پیام</Button>
-              </form>
-            </div>
-
-            {/* Contact Information */}
-            <div className="space-y-8">
-              <div className="bg-white rounded-lg border-2 border-wood-light/40 p-8 wood-texture">
-                <h2 className="text-2xl font-bold text-wood-dark mb-6">اطلاعات تماس</h2>
-                <div className="space-y-6">
-                  <div className="flex items-start gap-4">
-                    <div className="bg-wood-light/50 p-3 rounded-lg">
-                      <MapPin className="w-6 h-6 text-wood-medium" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-wood-dark mb-1">آدرس</h3>
-                      <p className="text-muted-foreground">تهران، خیابان انقلاب، نبش خیابان فلسطین، پلاک ۱۲۳</p>
-                    </div>
+                <div className="flex gap-4">
+                  <Phone className="w-6 h-6 text-wood-medium shrink-0" />
+                  <div dir="ltr">
+                    <p>+49 221 42305824</p>
+                    <p>+49 173 8779093</p>
                   </div>
+                </div>
 
-                  <div className="flex items-start gap-4">
-                    <div className="bg-wood-light/50 p-3 rounded-lg">
-                      <Phone className="w-6 h-6 text-wood-medium" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-wood-dark mb-1">تلفن</h3>
-                      <p className="text-muted-foreground" dir="ltr">
-                        +98 21 1234 5678
-                      </p>
-                      <p className="text-muted-foreground" dir="ltr">
-                        +98 912 345 6789
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4">
-                    <div className="bg-wood-light/50 p-3 rounded-lg">
-                      <Mail className="w-6 h-6 text-wood-medium" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-wood-dark mb-1">ایمیل</h3>
-                      <p className="text-muted-foreground">info@nashrbimarz.com</p>
-                      <p className="text-muted-foreground">support@nashrbimarz.com</p>
-                    </div>
+                <div className="flex gap-4">
+                  <Mail className="w-6 h-6 text-wood-medium shrink-0" />
+                  <div>
+                    <p>info@nashrbimarz.com</p>
+                    <p>support@nashrbimarz.com</p>
                   </div>
                 </div>
               </div>
+            </div>
 
-              <div className="bg-white rounded-lg border-2 border-wood-light/40 p-8 wood-texture">
-                <h2 className="text-2xl font-bold text-wood-dark mb-4">ساعات کاری</h2>
-                <div className="space-y-3 text-muted-foreground">
-                  <div className="flex justify-between">
-                    <span>شنبه تا چهارشنبه:</span>
-                    <span className="font-medium text-wood-dark">۹:۰۰ - ۱۸:۰۰</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>پنج‌شنبه:</span>
-                    <span className="font-medium text-wood-dark">۹:۰۰ - ۱۴:۰۰</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>جمعه:</span>
-                    <span className="font-medium text-wood-dark">تعطیل</span>
-                  </div>
-                </div>
+            {/* Hours */}
+            <div className="wood-texture bg-wood-light/60 rounded-2xl p-8 border-4 border-wood-medium/40 shadow-xl">
+              <h2 className="text-2xl font-bold text-wood-dark mb-4">
+                ساعات کاری
+              </h2>
+
+              <div className="space-y-3 text-wood-dark/80">
+                <p>دوشنبه تا شنبه: ۱۰:۰۰ – ۱۹:۰۰</p>
+                <p>یکشنبه: با هماهنگی قبلی</p>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       <Footer />
     </main>

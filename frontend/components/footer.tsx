@@ -1,8 +1,8 @@
 export function Footer() {
   const navLinks = [
     { href: "/", label: "خانه" },
-    { href: "/books", label: "کتاب‌ها" },
-    { href: "/authors", label: "نویسندگان" },
+    { href: "/shop", label: "کتاب‌ها" },
+    { href: "/writers", label: "نویسندگان" },
     { href: "/about", label: "درباره ما" },
     { href: "/contact", label: "تماس با ما" },
   ]

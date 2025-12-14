@@ -25,19 +25,35 @@ class Genre(models.Model):
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
+class BookSize(models.TextChoices):
+    A5 = "A5", "A5 (148 × 210 mm)"
+    B5 = "B5", "B5 (176 × 250 mm)"
+    A4 = "A4", "A4 (210 × 297 mm)"
+    POCKET = "POCKET", "Pocket"
+    CUSTOM = "CUSTOM", "Custom"
+
 class Book(models.Model):
     title = models.CharField(max_length=255)
     author = models.CharField(max_length=255)
+    translator = models.CharField(max_length=255, null=True, blank=True)
     isbn = models.CharField(max_length=13, unique=True, help_text=_("13-digit ISBN."))
     description = models.TextField(blank=True)
     price = models.DecimalField(max_digits=9, decimal_places=0)
     stock = models.IntegerField(default=0, help_text=_("Current number of units in stock."))
     genres = models.ManyToManyField(Genre, related_name='books', blank=True)
+    year = models.CharField(null=True , blank =True)
+    pages=models.CharField(max_length=4)
+    
     cover_image = models.ImageField(
         upload_to='book_covers/',
         blank=True,
         null=True,
         help_text=_("Book cover image.")
+    )
+    book_size = models.CharField(
+    max_length=20,
+    choices=BookSize.choices,
+    default=BookSize.B5 
     )
     is_active = models.BooleanField(default=True, help_text=_("Designates if the book is available for purchase."))
 
