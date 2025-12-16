@@ -5,6 +5,7 @@ from . import views
 
 router = DefaultRouter()
 router.register(r'books', views.BookViewSet)
+router.register(r'genres', views.GenreViewSet)
 
 urlpatterns = [
     # ⚠ PLACE CUSTOM ROUTES FIRST (before router)

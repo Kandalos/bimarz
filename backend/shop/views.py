@@ -128,3 +128,11 @@ def recommended_group_by_slug(request, slug):
 
     data = RecommendedGroupSerializer(group, context={'request': request}).data
     return Response(data)
+
+class GenreViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    API endpoint that allows genres to be viewed.
+    """
+    queryset = Genre.objects.all()
+    serializer_class = GenreSerializer
+    permission_classes = [IsAuthenticated] 

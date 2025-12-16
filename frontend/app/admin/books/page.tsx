@@ -22,7 +22,11 @@ import {
 } from "lucide-react"
 import apiService from "@/lib/apiService"
 
-
+type Genre = {
+  id: number
+  name: string
+  slug: string
+}
 
 type Event = {
   id: number
@@ -33,7 +37,6 @@ type Event = {
   is_public: boolean
   image?: string | null
 }
-
 
 type Book = {
   id: number
@@ -47,25 +50,23 @@ type Book = {
   cover_image?: string | null
   cover?: string | null
   genre?: string
+  genres?: Genre[]
   isbn?: string
   price?: number
   stock?: number
 }
-//--
+
 export default function AdminPage() {
   // Tabs + view mode state
   const router = useRouter()
   const [checkingAuth, setCheckingAuth] = useState(true)
   const [activeTab, setActiveTab] = useState<"events" | "books">("books")
   const [booksViewMode, setBooksViewMode] = useState<"grid" | "list">("grid")
-  const [eventsViewMode, setEventsViewMode] = useState<"grid" | "list">(
-    "grid"
-  )
+  const [eventsViewMode, setEventsViewMode] = useState<"grid" | "list">("grid")
   const [showEventForm, setShowEventForm] = useState(false)
   const [editingEvent, setEditingEvent] = useState<Event | null>(null)
   const [eventFormData, setEventFormData] = useState<Partial<Event>>({})
   const [eventImageFile, setEventImageFile] = useState<File | null>(null)
-
 
   // Events (mock)
   const [events, setEvents] = useState<Event[]>([])
@@ -76,10 +77,16 @@ export default function AdminPage() {
   const [booksLoading, setBooksLoading] = useState(false)
   const [booksError, setBooksError] = useState<string | null>(null)
 
+  // Genres coming from API
+  const [genres, setGenres] = useState<Genre[]>([])
+  const [genresLoading, setGenresLoading] = useState(false)
+  const [genresError, setGenresError] = useState<string | null>(null)
+
   // Form / editing state
   const [editingBook, setEditingBook] = useState<Book | null>(null)
   const [showBookForm, setShowBookForm] = useState(false)
   const [bookFormData, setBookFormData] = useState<Partial<Book>>({})
+  const [selectedGenreIds, setSelectedGenreIds] = useState<string[]>([])
   const [coverFile, setCoverFile] = useState<File | null>(null)
   const [formSaving, setFormSaving] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
@@ -108,42 +115,63 @@ export default function AdminPage() {
     }
   }
 
-  const fetchEvents = async () => {
-  setEventsLoading(true)
-  try {
-    const res = await apiService.get("/v1/events/")
-    setEvents(res.data || [])
-  } catch (err) {
-    console.error("fetchEvents error:", err)
-  } finally {
-    setEventsLoading(false)
-  }
-}
-
- useEffect(() => {
-  const checkAdmin = async () => {
+  // --- Fetch genres from API ---
+  const fetchGenres = async () => {
+    setGenresLoading(true)
+    setGenresError(null)
     try {
-      const res = await apiService.get("/v1/core/users/me/")
-
-      // 👇 STRICT check
-      if (!res.data?.is_superuser) {
-        router.replace("/login")
-        return
-      }
-
-      // allowed
-      setCheckingAuth(false)
-    } catch (err) {
-      router.replace("/login")
+      const res = await apiService.get("/v1/shop/genres/")
+      setGenres(res.data || [])
+      console.log("Genres fetched:", res.data) // Debug log
+    } catch (err: any) {
+      console.error("fetchGenres error:", err)
+      setGenresError(
+        err?.response?.data?.detail ||
+          err?.message ||
+          "خطا در دریافت ژانرها از سرور"
+      )
+    } finally {
+      setGenresLoading(false)
     }
   }
 
-  checkAdmin()
-}, [])
+  const fetchEvents = async () => {
+    setEventsLoading(true)
+    try {
+      const res = await apiService.get("/v1/events/")
+      setEvents(res.data || [])
+    } catch (err) {
+      console.error("fetchEvents error:", err)
+    } finally {
+      setEventsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    const checkAdmin = async () => {
+      try {
+        const res = await apiService.get("/v1/core/users/me/")
+
+        // 👇 STRICT check
+        if (!res.data?.is_superuser) {
+          router.replace("/login")
+          return
+        }
+
+        // allowed
+        setCheckingAuth(false)
+      } catch (err) {
+        router.replace("/login")
+      }
+    }
+
+    checkAdmin()
+  }, [])
+
   useEffect(() => {
     fetchBooks()
+    fetchGenres()
     fetchEvents()
-
   }, [])
 
   // --- Helpers ---
@@ -151,6 +179,7 @@ export default function AdminPage() {
     setEditingBook(null)
     setBookFormData({})
     setCoverFile(null)
+    setSelectedGenreIds([])
     setShowBookForm(false)
     setFormError(null)
   }
@@ -159,6 +188,7 @@ export default function AdminPage() {
     setEditingBook(null)
     setBookFormData({})
     setCoverFile(null)
+    setSelectedGenreIds([])
     setShowBookForm(true)
   }
 
@@ -180,10 +210,15 @@ export default function AdminPage() {
       genre: b.genre,
       cover: b.cover_image || "",
     })
+    // Set selected genre IDs as strings
+    if (b.genres && b.genres.length > 0) {
+      setSelectedGenreIds(b.genres.map(g => String(g.id)))
+    } else {
+      setSelectedGenreIds([])
+    }
     setCoverFile(null)
     setShowBookForm(true)
   }
-
 
   // --- Delete ---
   const handleDeleteBook = async (id: number) => {
@@ -208,6 +243,12 @@ export default function AdminPage() {
   ) => {
     const { id, value } = e.target
     setBookFormData((prev) => ({ ...prev, [id]: value }))
+  }
+
+  const handleGenreChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedOptions = Array.from(e.target.selectedOptions, option => option.value)
+    setSelectedGenreIds(selectedOptions)
+    console.log("Selected genres:", selectedOptions) // Debug log
   }
 
   const handleCoverSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -261,6 +302,10 @@ export default function AdminPage() {
       appendIf("pages", bookFormData.pages)
       appendIf("year", bookFormData.year)
 
+      // Append genre_ids (required field)
+      selectedGenreIds.forEach(id => {
+        form.append("genre_ids", id)
+      })
 
       // if you want to handle genres as ids, you'd append genre_ids (not included in form UI)
       // append file if present
@@ -273,7 +318,9 @@ export default function AdminPage() {
 
       // Use axios request with proper headers: apiService will set JSON header by default,
       const config = {
-        headers: {},
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       }
 
       let res
@@ -340,11 +387,12 @@ export default function AdminPage() {
     // keep events local like before
     // omitted for brevity — your existing code handles this
   }
+
   if (checkingAuth) {
-  return (
-    <div className="min-h-screen flex items-center justify-center text-wood-dark">
-      در حال بررسی دسترسی...
-    </div>
+    return (
+      <div className="min-h-screen flex items-center justify-center text-wood-dark">
+        در حال بررسی دسترسی...
+      </div>
     )
   }
 
@@ -355,7 +403,7 @@ export default function AdminPage() {
       <div className="container mx-auto px-4 py-8 md:py-16">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-               <div className="mb-12 space-y-6">
+          <div className="mb-12 space-y-6">
             <div className="text-center py-6">
               <h1 className="text-4xl md:text-5xl font-bold text-wood-dark mb-3">مدیریت کتاب‌ها</h1>
               <p className="text-wood-medium text-lg mb-6">افزودن، ویرایش و حذف کتاب‌های فروشگاه</p>
@@ -426,7 +474,7 @@ export default function AdminPage() {
                     </button>
                   </div>
 
-                  <form onSubmit={submitBookForm} className="space-y-6">
+                  <form onSubmit={submitBookForm} encType="multipart/form-data" className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <Label htmlFor="title" className="text-wood-dark font-bold mb-2 block">
@@ -456,7 +504,7 @@ export default function AdminPage() {
                         />
                       </div>
 
-                       <div>
+                      <div>
                         <Label htmlFor="translator" className="text-wood-dark font-bold mb-2 block">
                           مترجم
                         </Label>
@@ -466,12 +514,11 @@ export default function AdminPage() {
                           className="border-wood-light focus:border-wood-medium"
                           value={bookFormData.translator || ""}
                           onChange={handleBookFormChange}
-                          
                         />
                       </div>
 
-                        <div>
-                       <Label htmlFor="book_size" className="text-wood-dark font-bold mb-2 block">
+                      <div>
+                        <Label htmlFor="book_size" className="text-wood-dark font-bold mb-2 block">
                           قطع کتاب
                         </Label>
                         <select
@@ -487,7 +534,6 @@ export default function AdminPage() {
                           <option value="CUSTOM">سفارشی</option>
                         </select>
                       </div>
-                      
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -545,6 +591,44 @@ export default function AdminPage() {
                         value={bookFormData.description || ""}
                         onChange={handleBookFormChange}
                       />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="genres" className="text-wood-dark font-bold mb-2 block">
+                        ژانرها
+                      </Label>
+                      {genresLoading ? (
+                        <p>در حال بارگذاری ژانرها...</p>
+                      ) : genresError ? (
+                        <p className="text-red-500">{genresError}</p>
+                      ) : (
+                        <div className="space-y-2">
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                            {genres.map((genre) => (
+                              <div key={genre.id} className="flex items-center">
+                                <input
+                                  type="checkbox"
+                                  id={`genre-${genre.id}`}
+                                  value={genre.id}
+                                  checked={selectedGenreIds.includes(String(genre.id))}
+                                  onChange={(e) => {
+                                    if (e.target.checked) {
+                                      setSelectedGenreIds(prev => [...prev, String(genre.id)])
+                                    } else {
+                                      setSelectedGenreIds(prev => prev.filter(id => id !== String(genre.id)))
+                                    }
+                                  }}
+                                  className="mr-2"
+                                />
+                                <label htmlFor={`genre-${genre.id}`} className="cursor-pointer">
+                                  {genre.name}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                          <p className="text-sm text-gray-500 mt-1">می‌توانید چند ژانر را انتخاب کنید</p>
+                        </div>
+                      )}
                     </div>
 
                     <div>
@@ -650,7 +734,11 @@ export default function AdminPage() {
                           <h3 className="text-lg font-bold text-wood-dark mb-1">{book.title}</h3>
                           <p className="text-wood-medium mb-2"><span className="font-bold">نویسنده:</span> {book.author}</p>
                           <p className="text-sm text-wood-dark/70 mb-2">
-                            {book.genre && (<><span className="font-bold">ژانر:</span> {book.genre} | </>)}
+                            {book.genres && book.genres.length > 0 && (
+                              <>
+                                <span className="font-bold">ژانر:</span> {book.genres.map(g => g.name).join(", ")} | 
+                              </>
+                            )}
                             <span className="font-bold">صفحات:</span> {book.pages ?? "—"} | <span className="font-bold">سال:</span> {book.year ?? "—"}
                           </p>
                           {book.description && <p className="text-wood-dark/80 text-sm line-clamp-2 mb-4">{book.description}</p>}
@@ -677,7 +765,6 @@ export default function AdminPage() {
               </div>
             </div>
           )}
-          
 
           {/* EVENTS (local) */}
           {activeTab === "events" && (
@@ -717,7 +804,7 @@ export default function AdminPage() {
                       </div>
                     ))}
                   </div>
-                )} 
+                )}
               </div>
             </div>
           )}
