@@ -107,7 +107,7 @@ export default function ShopPage() {
                       <h3 className="font-bold text-lg text-wood-dark mb-1 line-clamp-1">{book.title}</h3>
                       <p className="text-sm text-muted-foreground mb-3">{book.author}</p>
                       <div className="flex justify-between items-center">
-                        <span className="text-xl font-bold text-wood-medium">{Number(book.price).toLocaleString("fa-IR")} تومان</span>
+                        <span className="text-xl font-bold text-wood-medium">{Number(book.price).toLocaleString("fa-IR")} یورو</span>
                         {book.stock > 0 && (
                           <Button size="sm" className="bg-wood-medium hover:bg-wood-dark text-white">
                             خرید

@@ -44,7 +44,7 @@ export async function RecommendedBooksSection() {
                   <h3 className="font-bold text-base text-wood-dark mb-1 line-clamp-1">{book.title}</h3>
                   <p className="text-sm text-muted-foreground mb-3 line-clamp-1">{book.author}</p>
                   <div className="flex justify-between items-center">
-                    <span className="text-lg font-bold text-wood-medium">{book.price} تومان</span>
+                    <span className="text-lg font-bold text-wood-medium">{book.price} یورو</span>
                     <span className="flex items-center gap-1 text-sm text-yellow-600">
                       <Star className="w-4 h-4 fill-current" />
                       {book.rating || 5}

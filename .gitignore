@@ -7,7 +7,7 @@ backend/**/*.pyc
 backend/*.sqlite3
 backend/db.sqlite3
 backend/*.log
-
+backend/project/settings.py
 # Ignore Django local settings or env files
 backend/.env
 
@@ -32,7 +32,7 @@ frontend/.env.local
 frontend/.env.production
 frontend/.env.development
 frontend/.env.test
-
+frontend/lib/axiosInstance.js
 # ============================
 # General Environment / Secrets
 # ============================

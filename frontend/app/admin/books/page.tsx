@@ -521,18 +521,37 @@ export default function AdminPage() {
                         <Label htmlFor="book_size" className="text-wood-dark font-bold mb-2 block">
                           قطع کتاب
                         </Label>
-                        <select
-                          id="book_size"
-                          className="w-full border border-wood-light rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-wood-medium"
-                          value={bookFormData.book_size || "B5"}
-                          onChange={handleBookFormChange}
-                        >
-                          <option value="A5">A5 (148 × 210)</option>
-                          <option value="B5">B5 (176 × 250)</option>
-                          <option value="A4">A4 (210 × 297)</option>
-                          <option value="POCKET">جیبی</option>
-                          <option value="CUSTOM">سفارشی</option>
-                        </select>
+                       <select
+                        id="book_size"
+                        name="book_size"
+                        className="w-full border border-wood-light rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-wood-medium"
+                        value={bookFormData.book_size || ""}
+                        onChange={handleBookFormChange}
+                        required
+                      >
+                        <option value="" disabled>
+                          انتخاب قطع کتاب
+                        </option>
+
+                        <option value="JIBI_SHOMIZ">جیبی (شومیز)</option>
+                        <option value="JIBI_GHALINGOR">جیبی (گالینگور)</option>
+
+                        <option value="PALTUI_SHOMIZ">پالتویی (شومیز)</option>
+                        <option value="PALTUI_GHALINGOR">پالتویی (گالینگور)</option>
+
+                        <option value="RAGHEI_SHOMIZ">رقعی (شومیز)</option>
+                        <option value="RAGHEI_GHALINGOR">رقعی (گالینگور)</option>
+
+                        <option value="VAZIRI_SHOMIZ">وزیری (شومیز)</option>
+                        <option value="VAZIRI_GHALINGOR">وزیری (گالینگور)</option>
+
+                        <option value="RAHLI_SHOMIZ">رحلی (شومیز)</option>
+                        <option value="RAHLI_GHALINGOR">رحلی (گالینگور)</option>
+
+                        <option value="KHESHTI_SHOMIZ">خشتی (شومیز)</option>
+                        <option value="KHESHTI_GHALINGOR">خشتی (گالینگور)</option>
+                      </select>
+
                       </div>
                     </div>
 
@@ -602,32 +621,66 @@ export default function AdminPage() {
                       ) : genresError ? (
                         <p className="text-red-500">{genresError}</p>
                       ) : (
-                        <div className="space-y-2">
-                          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                            {genres.map((genre) => (
-                              <div key={genre.id} className="flex items-center">
+                        <div className="space-y-4">
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                          {genres.map((genre) => {
+                            const isSelected = selectedGenreIds.includes(String(genre.id))
+
+                            return (
+                              <label
+                                key={genre.id}
+                                htmlFor={`genre-${genre.id}`}
+                                className={`
+                                  flex items-center gap-3 px-4 py-3 rounded-lg border-2 cursor-pointer transition-all
+                                  ${isSelected
+                                    ? "bg-wood-light/40 border-wood-medium"
+                                    : "bg-white border-wood-light hover:border-wood-medium/60"}
+                                `}
+                              >
                                 <input
                                   type="checkbox"
                                   id={`genre-${genre.id}`}
                                   value={genre.id}
-                                  checked={selectedGenreIds.includes(String(genre.id))}
+                                  checked={isSelected}
                                   onChange={(e) => {
                                     if (e.target.checked) {
-                                      setSelectedGenreIds(prev => [...prev, String(genre.id)])
+                                      setSelectedGenreIds((prev) => [...prev, String(genre.id)])
                                     } else {
-                                      setSelectedGenreIds(prev => prev.filter(id => id !== String(genre.id)))
+                                      setSelectedGenreIds((prev) =>
+                                        prev.filter((id) => id !== String(genre.id))
+                                      )
                                     }
                                   }}
-                                  className="mr-2"
+                                  className="hidden"
                                 />
-                                <label htmlFor={`genre-${genre.id}`} className="cursor-pointer">
+
+                                {/* Custom checkbox */}
+                                <div
+                                  className={`
+                                    w-4 h-4 rounded border-2 flex items-center justify-center
+                                    ${isSelected
+                                      ? "bg-wood-dark border-wood-dark"
+                                      : "border-wood-medium"}
+                                  `}
+                                >
+                                  {isSelected && (
+                                    <div className="w-2 h-2 bg-white rounded-sm" />
+                                  )}
+                                </div>
+
+                                <span className="text-wood-dark font-medium">
                                   {genre.name}
-                                </label>
-                              </div>
-                            ))}
-                          </div>
-                          <p className="text-sm text-gray-500 mt-1">می‌توانید چند ژانر را انتخاب کنید</p>
+                                </span>
+                              </label>
+                            )
+                          })}
                         </div>
+
+                        <p className="text-sm text-wood-medium">
+                          می‌توانید چند ژانر را انتخاب کنید
+                        </p>
+                      </div>
+
                       )}
                     </div>
 
@@ -667,7 +720,7 @@ export default function AdminPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <Label htmlFor="price" className="text-wood-dark font-bold mb-2 block">
-                          قیمت (تومان)
+                          قیمت (یورو)
                         </Label>
                         <Input
                           id="price"

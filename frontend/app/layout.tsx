@@ -6,9 +6,8 @@ import { Providers } from "@/components/Providers"
 
 // Metadata must be exported from a Server Component
 export const metadata: Metadata = {
-  title: "انتشارات",
-  description: "ساخته شده با v0",
-  generator: "v0.app",
+  title: "کافه شالپلاته - نشر بی مرز",
+  description: "ساخته شده با اولین کافه‌کتاب ایرانی در اروپا",
 }
 
 export default function RootLayout({

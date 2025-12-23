@@ -1,19 +1,18 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { TrendingUp } from "lucide-react"
+import axiosInstance from "@/lib/axiosInstance";
 
 async function getMostBoughtBooks() {
-  const res = await fetch("http://127.0.0.1:8000/api/v1/shop/books/most-bought/", {
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
-    console.error("Failed to fetch most bought books");
+  try {
+    const response = await axiosInstance.get("v1/shop/books/most-bought/");
+    return response.data.books || [];
+  } catch (error) {
+    console.error("Failed to fetch most bought books:", error);
     return [];
   }
-
-  return res.json();
 }
+
 
 export async function MostBoughtBooksSection() {
   const mostBoughtBooks = await getMostBoughtBooks();

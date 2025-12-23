@@ -202,7 +202,7 @@ export default function AdminPurchasesPage() {
                           <span className="text-wood-dark">
                             {item.title} × {item.quantity}
                           </span>
-                          <span className="font-bold text-wood-medium">{item.price.toLocaleString("fa-IR")} تومان</span>
+                          <span className="font-bold text-wood-medium">{item.price.toLocaleString("fa-IR")} یورو</span>
                         </div>
                       ))}
                     </div>
@@ -215,7 +215,7 @@ export default function AdminPurchasesPage() {
                       مجموع:
                     </span>
                     <span className="text-xl font-bold text-wood-dark">
-                      {purchase.totalAmount.toLocaleString("fa-IR")} تومان
+                      {purchase.totalAmount.toLocaleString("fa-IR")} یورو
                     </span>
                   </div>
 

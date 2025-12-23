@@ -81,7 +81,7 @@ export default function CartPage() {
                           <h3 className="font-bold text-lg text-wood-dark mb-1">{item.title}</h3>
                           <p className="text-sm text-muted-foreground mb-3">{item.author}</p>
                           <p className="text-xl font-bold text-wood-medium mb-3">
-                            {item.price.toLocaleString("fa-IR")} تومان
+                            {item.price.toLocaleString("fa-IR")} یورو
                           </p>
                           <div className="flex items-center gap-4">
                             <div className="flex items-center gap-2">
@@ -129,16 +129,16 @@ export default function CartPage() {
                   <CardContent className="space-y-4">
                     <div className="flex justify-between text-muted-foreground">
                       <span>جمع کل:</span>
-                      <span>{subtotal.toLocaleString("fa-IR")} تومان</span>
+                      <span>{subtotal.toLocaleString("fa-IR")} یورو</span>
                     </div>
                     <div className="flex justify-between text-muted-foreground">
                       <span>هزینه ارسال:</span>
-                      <span>{shipping.toLocaleString("fa-IR")} تومان</span>
+                      <span>{shipping.toLocaleString("fa-IR")} یورو</span>
                     </div>
                     <div className="border-t border-wood-light/40 pt-4">
                       <div className="flex justify-between text-xl font-bold text-wood-dark">
                         <span>مجموع:</span>
-                        <span>{total.toLocaleString("fa-IR")} تومان</span>
+                        <span>{total.toLocaleString("fa-IR")} یورو</span>
                       </div>
                     </div>
                     <Button onClick={handleCheckout} className="w-full bg-wood-medium hover:bg-wood-dark text-white">
