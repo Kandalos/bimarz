@@ -175,11 +175,10 @@ Contributions are welcome! To propose fixes or improvements:
 4. Submit a pull request
 
 
+---
 
-#Project Architecture Diagram
+## Project Architecture Diagram:
 
-```
-```
 ```
                                     +----------------+
                                     |   bimarz.org   |
