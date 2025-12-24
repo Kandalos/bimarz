@@ -20,7 +20,7 @@ services:
     image: redis:7-alpine
     container_name: bimarz_redis
     restart: unless-stopped
-    command: redis-server --appendonly yes --requirepass X%k0c2t3o7
+    command: redis-server --appendonly yes --requirepass redispassword
     volumes:
       - redis_data:/data
     networks:
