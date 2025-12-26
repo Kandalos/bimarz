@@ -1,31 +1,44 @@
+"use client"; // important for useEffect
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Star } from "lucide-react"
-import axiosInstance from "@/lib/axiosInstance";
+import { useEffect, useState } from "react"
+import axiosInstance from "@/lib/axiosInstance"
 
-async function getRecommendedBooks() {
-  try {
-    const response = await axiosInstance.get("v1/shop/books/recommended/recommended");
-    return response.data.books || [];
-  } catch (error) {
-    console.error("Failed to fetch recommended books:", error);
-    return [];
+export function RecommendedBooksSection() {
+  const [recommendedBooks, setRecommendedBooks] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchRecommendedBooks() {
+      try {
+        const response = await axiosInstance.get("v1/shop/books/recommended/recommended/")
+        setRecommendedBooks(response.data.books || [])
+      } catch (error) {
+        console.error("Failed to fetch recommended books:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchRecommendedBooks()
+  }, [])
+
+  if (loading) {
+    return <p className="text-center py-12">در حال بارگذاری...</p>
   }
-}
-
-
-export async function RecommendedBooksSection() {
-  const recommendedBooks = await getRecommendedBooks()
 
   return (
     <section className="py-24 px-6 bg-background">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-wood-dark">
-           پیشنهادی ما
+            پیشنهادی ما
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-بگو چی خوندی؟ تا بگم چی بخونی!          </p>
+            بگو چی خوندی؟ تا بگم چی بخونی!
+          </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-12">

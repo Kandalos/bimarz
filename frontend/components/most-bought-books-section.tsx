@@ -1,21 +1,33 @@
+"use client";
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { TrendingUp } from "lucide-react"
-import axiosInstance from "@/lib/axiosInstance";
+import { useEffect, useState } from "react"
+import axiosInstance from "@/lib/axiosInstance"
 
-async function getMostBoughtBooks() {
-  try {
-    const response = await axiosInstance.get("v1/shop/books/recommended/most-bought/");
-    return response.data.books || [];
-  } catch (error) {
-    console.error("Failed to fetch most bought books:", error);
-    return [];
+export function MostBoughtBooksSection() {
+  const [mostBoughtBooks, setMostBoughtBooks] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchMostBoughtBooks() {
+      try {
+        const response = await axiosInstance.get("v1/shop/books/recommended/most-bought/")
+        setMostBoughtBooks(response.data.books || [])
+      } catch (error) {
+        console.error("Failed to fetch most bought books:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchMostBoughtBooks()
+  }, [])
+
+  if (loading) {
+    return <p className="text-center py-12">در حال بارگذاری...</p>
   }
-}
-
-
-export async function MostBoughtBooksSection() {
-  const mostBoughtBooks = await getMostBoughtBooks();
 
   return (
     <section className="py-24 px-6 bg-wood-light/10">
