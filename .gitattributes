@@ -1,0 +1,8 @@
+# Hide TypeScript from the statistics
+*.ts linguist-detectable=false
+*.tsx linguist-detectable=false
+
+# Explicitly enable JavaScript and Python detection
+*.js linguist-detectable=true
+*.jsx linguist-detectable=true
+*.py linguist-detectable=true
