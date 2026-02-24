@@ -8,8 +8,8 @@ from rest_framework.decorators import api_view, permission_classes
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 
-from .models import Book, Genre, Order, OrderItem, RecommendedGroup
-from .serializers import BookSerializer, GenreSerializer, OrderSerializer, RecommendedGroupSerializer
+from .models import Book, Genre, RecommendedGroup
+from .serializers import BookSerializer, GenreSerializer, RecommendedGroupSerializer
 
 
 # -----------------------
@@ -59,34 +59,6 @@ class GenreViewSet(viewsets.ModelViewSet):
         else:
             permission_classes = [IsAdminUser]
         return [p() for p in permission_classes]
-
-
-# -----------------------
-# Orders / E-commerce Views
-# -----------------------
-class OrderCreateViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
-    """
-    Endpoint to create orders.
-    Requires authentication.
-    Example payload:
-    {
-      "items": [
-        {"book": <book_id>, "quantity": 2}
-      ]
-    }
-    """
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
-    permission_classes = [IsAuthenticated]
-
-    @transaction.atomic
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data, context={"request": request})
-        serializer.is_valid(raise_exception=True)
-
-        order = serializer.save()
-
-        return Response(self.get_serializer(order).data, status=status.HTTP_201_CREATED)
 
 
 # -----------------------

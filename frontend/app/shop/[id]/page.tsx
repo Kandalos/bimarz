@@ -12,10 +12,11 @@ import {
   Minus,
   ChevronDown,
   ChevronUp,
+  Loader2,
 } from "lucide-react";
 import Link from "next/link";
 import apiService from "@/lib/apiService";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 /* ----------------------------------
    Helpers
@@ -41,8 +42,10 @@ export default function BookDetailPage() {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [book, setBook] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
+  const [addingToCart, setAddingToCart] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const { id } = useParams();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchBook = async () => {
@@ -60,8 +63,30 @@ export default function BookDetailPage() {
     if (id) fetchBook();
   }, [id]);
 
-  const handleAddToCart = () => {
-    alert(`${quantity} عدد از کتاب "${book.title}" به سبد خرید اضافه شد`);
+  const handleAddToCart = async () => {
+    if (!book) return;
+    setAddingToCart(true);
+    try {
+      // The endpoint expects book_id (not id) and quantity
+      await apiService.post('/orders/cart/add/', {
+        book_id: book.id,
+        quantity: quantity,
+      });
+      // Option 1: Show success message and optionally redirect to cart
+      alert(`${quantity} عدد از کتاب "${book.title}" به سبد خرید اضافه شد`);
+      // Option 2: Redirect to cart page
+      // router.push('/cart');
+    } catch (error: any) {
+      console.error('Add to cart error:', error);
+      if (error.response?.status === 401) {
+        alert('لطفاً ابتدا وارد شوید');
+        router.push('/login?redirect=' + encodeURIComponent(`/book/${id}`));
+      } else {
+        alert('خطا در افزودن به سبد خرید. لطفاً دوباره تلاش کنید.');
+      }
+    } finally {
+      setAddingToCart(false);
+    }
   };
 
   if (loading) {
@@ -153,9 +178,7 @@ export default function BookDetailPage() {
                 <Spec label="شابک" value={book.isbn || "—"} />
                 <Spec
                   label="قطع کتاب"
-                  value={
-                    BOOK_SIZE_LABELS[book.book_size] || "—"
-                  }
+                  value={BOOK_SIZE_LABELS[book.book_size] || "—"}
                 />
               </div>
 
@@ -223,6 +246,7 @@ export default function BookDetailPage() {
                           onClick={() =>
                             setQuantity(Math.max(1, quantity - 1))
                           }
+                          disabled={addingToCart}
                         >
                           <Minus className="w-4 h-4" />
                         </Button>
@@ -233,6 +257,7 @@ export default function BookDetailPage() {
                           size="icon-sm"
                           variant="outline"
                           onClick={() => setQuantity(quantity + 1)}
+                          disabled={addingToCart}
                         >
                           <Plus className="w-4 h-4" />
                         </Button>
@@ -241,10 +266,20 @@ export default function BookDetailPage() {
 
                     <Button
                       onClick={handleAddToCart}
-                      className="w-full bg-wood-medium hover:bg-wood-dark text-white"
+                      disabled={addingToCart}
+                      className="w-full bg-wood-medium hover:bg-wood-dark text-white disabled:opacity-50"
                     >
-                      <ShoppingCart className="w-5 h-5 ml-2" />
-                      افزودن به سبد خرید
+                      {addingToCart ? (
+                        <>
+                          <Loader2 className="w-5 h-5 ml-2 animate-spin" />
+                          در حال افزودن...
+                        </>
+                      ) : (
+                        <>
+                          <ShoppingCart className="w-5 h-5 ml-2" />
+                          افزودن به سبد خرید
+                        </>
+                      )}
                     </Button>
                   </>
                 )}

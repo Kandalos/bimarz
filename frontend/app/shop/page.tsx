@@ -5,8 +5,9 @@ import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import apiService from "@/lib/apiService";
 
 export default function ShopPage() {
@@ -17,6 +18,8 @@ export default function ShopPage() {
   ]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [addingToCart, setAddingToCart] = useState<Record<number, boolean>>({});
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,7 +27,7 @@ export default function ShopPage() {
       try {
         const res = await apiService.get("/v1/shop/books/");
         setBooks(res.data);
-        // Try to derive categories from book payload if no dedicated endpoint
+        // Derive categories from books
         const uniq = Array.from(
           new Set(res.data.flatMap((b: any) => (b.genres || []).map((g: any) => g.name)))
         );
@@ -41,10 +44,39 @@ export default function ShopPage() {
     fetchData();
   }, []);
 
+  const handleAddToCart = async (book: any, e: React.MouseEvent) => {
+    e.preventDefault();      // Prevent navigation
+    e.stopPropagation();     // Prevent card link click
+
+    if (addingToCart[book.id]) return; // Already adding
+
+    setAddingToCart(prev => ({ ...prev, [book.id]: true }));
+    try {
+      await apiService.post('/orders/cart/add/', {
+        book_id: book.id,
+        quantity: 1,
+      });
+      // Optional: show a toast notification
+      alert(`کتاب "${book.title}" به سبد خرید اضافه شد`);
+    } catch (error: any) {
+      console.error('Add to cart error:', error);
+      if (error.response?.status === 401) {
+        alert('لطفاً ابتدا وارد شوید');
+        router.push('/login?redirect=/shop');
+      } else {
+        alert('خطا در افزودن به سبد خرید. لطفاً دوباره تلاش کنید.');
+      }
+    } finally {
+      setAddingToCart(prev => ({ ...prev, [book.id]: false }));
+    }
+  };
+
   const filteredBooks =
     selectedCategory === "all"
       ? books
-      : books.filter((book: any) => (book.genres || []).some((g: any) => g.name === selectedCategory));
+      : books.filter((book: any) =>
+          (book.genres || []).some((g: any) => g.name === selectedCategory)
+        );
 
   return (
     <main className="min-h-screen bg-background">
@@ -95,22 +127,33 @@ export default function ShopPage() {
                         alt={book.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
-                    {book.stock <= 0 && (
-                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                        <Badge variant="destructive" className="text-lg px-4 py-2">
-                          ناموجود
-                        </Badge>
-                      </div>
-                    )}
+                      {book.stock <= 0 && (
+                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                          <Badge variant="destructive" className="text-lg px-4 py-2">
+                            ناموجود
+                          </Badge>
+                        </div>
+                      )}
                     </div>
                     <div className="p-4">
                       <h3 className="font-bold text-lg text-wood-dark mb-1 line-clamp-1">{book.title}</h3>
                       <p className="text-sm text-muted-foreground mb-3">{book.author}</p>
                       <div className="flex justify-between items-center">
-                        <span className="text-xl font-bold text-wood-medium">{Number(book.price).toLocaleString("fa-IR")} یورو</span>
+                        <span className="text-xl font-bold text-wood-medium">
+                          {Number(book.price).toLocaleString("fa-IR")} یورو
+                        </span>
                         {book.stock > 0 && (
-                          <Button size="sm" className="bg-wood-medium hover:bg-wood-dark text-white">
-                            خرید
+                          <Button
+                            size="sm"
+                            className="bg-wood-medium hover:bg-wood-dark text-white"
+                            onClick={(e) => handleAddToCart(book, e)}
+                            disabled={addingToCart[book.id]}
+                          >
+                            {addingToCart[book.id] ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              "خرید"
+                            )}
                           </Button>
                         )}
                       </div>

@@ -30,12 +30,24 @@ class CustomUserManager(BaseUserManager):
 
         return self.create_user(email, password, **extra_fields)
 
+class Location(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
 
 class CustomUser(AbstractUser):
     # Custom fields
+    location = models.ForeignKey(
+        Location, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True
+    )
     customer_id = models.CharField(max_length=50, unique=True, blank=True, null=True)
     is_verified_buyer = models.BooleanField(default=False)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
+    country = models.CharField
     address = models.TextField(blank=True, null=True)
     postal_code = models.CharField(max_length=20, blank=True, null=True)
     email = models.EmailField(_('email address'), unique=True)
