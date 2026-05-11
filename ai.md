@@ -1,1 +1,0 @@
-1. use db 2. i have sandbox and live secrect and client ids, i want paypal to handle stuff ( better security) so use webhooks. I already store the shipping address in custom user. we can later check for a full profile info at checkout in frontend using api call. add shipping fee and  

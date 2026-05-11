@@ -1,20 +1,102 @@
 from django.db import models
 from django.conf import settings
+from django.core.exceptions import ValidationError
 import uuid
 
 
 # =========================
-# SHIPPING
+# SHIPPING CONFIG (Singleton)
+# =========================
+
+class ShippingConfig(models.Model):
+    """
+    Singleton model for global shipping configuration.
+    Controls the paper weight (grams per page) used to estimate book weight.
+    """
+    paper_weight_grams = models.DecimalField(
+        max_digits=6,
+        decimal_places=4,
+        default=0.08,
+        help_text="Weight of a single page in grams (e.g. 0.08 g/page for standard 80gsm paper)."
+    )
+
+    class Meta:
+        verbose_name = "Shipping Configuration"
+        verbose_name_plural = "Shipping Configuration"
+
+    def __str__(self):
+        return f"Shipping Config (paper weight: {self.paper_weight_grams} g/page)"
+
+    def save(self, *args, **kwargs):
+        # Enforce singleton: only one instance allowed
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def get_solo(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+
+# =========================
+# SHIPPING ZONE
 # =========================
 
 class ShippingZone(models.Model):
+    """
+    Represents a shipping destination zone with weight-based pricing rules.
+    """
     name = models.CharField(max_length=100)
     locations = models.ManyToManyField("core.Location")
-    price_eur = models.DecimalField(max_digits=8, decimal_places=2)
     active = models.BooleanField(default=True)
 
+    # --- Pricing ---
+    default_price = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        default=0,
+        help_text="Fixed shipping price applied when shipment weight is within the threshold (in EUR)."
+    )
+    price_per_weight_unit = models.DecimalField(
+        max_digits=8,
+        decimal_places=4,
+        default=0,
+        help_text="Price charged per gram of total shipment weight when weight exceeds threshold (in EUR)."
+    )
+    weight_threshold = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0,
+        help_text=(
+            "Maximum shipment weight in grams that qualifies for the fixed default price. "
+            "If total weight exceeds this, per-weight pricing applies."
+        )
+    )
+
     def __str__(self):
-        return f"{self.name} - €{self.price_eur}"
+        return (
+            f"{self.name} — fixed: €{self.default_price} "
+            f"(up to {self.weight_threshold}g), "
+            f"per-gram: €{self.price_per_weight_unit}"
+        )
+
+    def calculate_shipping_cost(self, total_weight_grams):
+        """
+        Determine shipping cost based on shipment weight.
+
+        Args:
+            total_weight_grams (Decimal): total weight of all books in the order.
+
+        Returns:
+            Decimal: shipping cost in EUR.
+        """
+        from decimal import Decimal
+        total_weight_grams = Decimal(str(total_weight_grams))
+
+        if total_weight_grams <= self.weight_threshold:
+            return self.default_price
+        else:
+            return total_weight_grams * self.price_per_weight_unit
 
 
 # =========================
